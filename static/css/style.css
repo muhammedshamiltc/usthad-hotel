@@ -194,3 +194,51 @@
     font-family: "Roboto";
     font-size: 14px;
 }
+/* ── MOBILE RESPONSIVE ── */
+@media (max-width: 768px) {
+    .page-wrapper {
+        flex-direction: column !important;
+    }
+    .left-panel {
+        display: none !important;
+    }
+    .right-panel {
+        padding: 30px 20px !important;
+        width: 100% !important;
+    }
+    .navbar {
+        padding: 5px 10px !important;
+    }
+    .food-munch-home-bg {
+        padding: 60px 15px !important;
+    }
+    .food-munch-home-bg h1 {
+        font-size: 26px !important;
+    }
+    .menu-section {
+        padding: 30px 0 !important;
+    }
+    .category-tabs {
+        gap: 6px !important;
+    }
+    .cat-tab {
+        padding: 5px 12px !important;
+        font-size: 12px !important;
+    }
+    .menu-card img {
+        height: 140px !important;
+    }
+    .cart-modal {
+        padding: 20px 15px !important;
+        margin: 10px !important;
+    }
+    .order-form-grid {
+        grid-template-columns: 1fr !important;
+    }
+    .confirm-detail-grid {
+        grid-template-columns: 1fr !important;
+    }
+    .confirm-card {
+        padding: 25px 15px !important;
+    }
+}
