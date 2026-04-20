@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Food Munch - Sign Up</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Manjari&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #183b56 0%, #0d2436 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Roboto', sans-serif;
+            padding: 30px 15px;
+        }
+        .page-wrapper {
+            display: flex;
+            width: 100%;
+            max-width: 950px;
+            min-height: 600px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+        /* Left panel */
+        .left-panel {
+            background: linear-gradient(135deg, #003d40 0%, #006b70 30%, #00b4bb 65%, #00d4cc 100%);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 50px 40px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        .left-panel::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+            opacity: 0.08;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .left-panel img, .left-panel h1, .left-panel p, .left-panel div {
+            position: relative; z-index: 2;
+        }
+        .left-panel img { width: 200px; height: auto; margin-bottom: 20px; }
+        .left-panel h1 { font-size: 32px; font-weight: 800; margin-bottom: 10px; }
+        .left-panel p { font-size: 16px; opacity: 0.9; text-align: center; margin-bottom: 30px; }
+        .feature-item { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; width: 100%; }
+        .feature-icon { font-size: 22px; }
+        .feature-text { font-size: 15px; opacity: 0.95; }
+        /* Right panel */
+        .right-panel {
+            background: white;
+            flex: 1.1;
+            padding: 50px 45px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .form-title { color: #183b56; font-size: 28px; font-weight: 800; margin-bottom: 6px; }
+        .form-subtitle { color: #7b8794; font-size: 14px; margin-bottom: 28px; }
+        .form-label { color: #183b56; font-weight: 600; font-size: 13px; margin-bottom: 5px; display: block; }
+        .form-control {
+            border-radius: 8px;
+            border: 1.5px solid #e0e0e0;
+            padding: 11px 14px;
+            font-size: 14px;
+            width: 100%;
+            margin-bottom: 16px;
+            transition: border-color 0.2s;
+        }
+        .form-control:focus { border-color: #d0b200; outline: none; box-shadow: 0 0 0 3px rgba(208,178,0,0.15); }
+        .submit-btn {
+            background: linear-gradient(135deg, #003d40 0%, #006b70 50%, #00b4bb 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 13px;
+            font-size: 16px;
+            font-weight: 700;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 4px;
+            transition: opacity 0.2s;
+        }
+        .submit-btn:hover { opacity: 0.88; }
+        .bottom-link { text-align: center; margin-top: 18px; color: #7b8794; font-size: 14px; }
+        .bottom-link a { color: #d0b200; font-weight: 700; text-decoration: none; }
+        .bottom-link a:hover { text-decoration: underline; }
+        .msg-box { text-align: center; font-size: 14px; font-weight: 600; margin-top: 12px; min-height: 20px; }
+        .row-2col { display: flex; gap: 14px; }
+        .row-2col > div { flex: 1; }
+        @media (max-width: 700px) {
+            .left-panel { display: none; }
+            .right-panel { padding: 35px 25px; }
+            .page-wrapper { border-radius: 14px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <!-- Left Panel -->
+        <div class="left-panel">
+            <img src="/static/logo.png" alt="Logo" />
+            <h1>
+                <span style="font-family: 'Manjari', sans-serif; font-size: 36px; font-weight: bold; color: red;">ഉസ്താദ്</span>
+                <span style="font-family:  sans-serif; font-size: 32px; font-weight: bold; color: black;"> HOTEL</span>
+            </h1>
+            <p>Get delicious food delivered to your doorstep anytime!</p>
+            <div class="feature-item">
+                <span class="feature-icon">🍽️</span>
+                <span class="feature-text">40+ Menu Items across 8 categories</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">🚚</span>
+                <span class="feature-text">Fast delivery to your address</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">💳</span>
+                <span class="feature-text">Multiple payment options</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">⭐</span>
+                <span class="feature-text">Fresh, healthy & organic food</span>
+            </div>
+        </div>
+        <!-- Right Panel -->
+        <div class="right-panel">
+            <h2 class="form-title">Create Account</h2>
+            <p class="form-subtitle">Sign up to start ordering delicious food!</p>
+            <div class="row-2col">
+                <div>
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="name" placeholder="Your full name" />
+                </div>
+                <div>
+                    <label class="form-label">Phone Number</label>
+                    <input type="text" class="form-control" id="phone" placeholder="10-digit number" />
+                </div>
+            </div>
+            <label class="form-label">Email Address</label>
+            <input type="email" class="form-control" id="email" placeholder="your@email.com" />
+            <label class="form-label">Delivery Address</label>
+            <input type="text" class="form-control" id="address" placeholder="Your full address" />
+            <div class="row-2col">
+                <div>
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" placeholder="Min 6 characters" />
+                </div>
+                <div>
+                    <label class="form-label">Confirm Password</label>
+                    <input type="password" class="form-control" id="confirmPassword" placeholder="Re-enter password" />
+                </div>
+            </div>
+            <button class="submit-btn" onclick="signUp()">Create My Account</button>
+            <div id="msg" class="msg-box"></div>
+            <div class="bottom-link">Already have an account? <a href="/login">Login here</a></div>
+        </div>
+    </div>
+
+    <script>
+        function signUp() {
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const address = document.getElementById('address').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const confirm = document.getElementById('confirmPassword').value.trim();
+            const msg = document.getElementById('msg');
+
+            if (!name || !phone || !email || !address || !password || !confirm) {
+                msg.style.color = '#b00020'; msg.innerText = '❌ Please fill in all fields!'; return;
+            }
+            if (password !== confirm) {
+                msg.style.color = '#b00020'; msg.innerText = '❌ Passwords do not match!'; return;
+            }
+            if (password.length < 6) {
+                msg.style.color = '#b00020'; msg.innerText = '❌ Password must be at least 6 characters!'; return;
+            }
+
+            fetch('/api/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, phone, email, address, password })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    msg.style.color = '#1a7a3c';
+                    msg.innerText = '✅ Account created! Redirecting to login...';
+                    setTimeout(() => window.location.href = '/login', 1500);
+                } else {
+                    msg.style.color = '#b00020';
+                    msg.innerText = '❌ ' + data.message;
+                }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,621 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Food Munch</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://kit.fontawesome.com/f7846f5b5d.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/static/css/style.css" />
+    <style>
+        /* ── NAVBAR CART BADGE ── */
+        .cart-badge {
+            background: #d0b200; color: white; border-radius: 50%;
+            width: 20px; height: 20px; display: inline-flex;
+            align-items: center; justify-content: center;
+            font-size: 11px; font-weight: bold; margin-left: 4px;
+        }
+        .user-welcome { color: #183b56; font-size: 14px; font-weight: 600; padding: 8px 12px; }
+
+        /* ── CATEGORY FILTER TABS ── */
+        .category-tabs { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 30px; }
+        .cat-tab {
+            background: white; color: #183b56; border: 2px solid #e0e0e0;
+            border-radius: 25px; padding: 7px 18px; font-size: 14px; font-weight: 600;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .cat-tab:hover, .cat-tab.active {
+            background: linear-gradient(#d0b200, #a58d00); color: white; border-color: #d0b200;
+        }
+
+        /* ── MENU CARDS ── */
+        .menu-section { padding: 60px 0; background: white; }
+        .menu-section-title { color: #183b56; font-size: 30px; font-weight: bold; margin-bottom: 6px; }
+        .menu-section-subtitle { color: #7b8794; font-size: 16px; margin-bottom: 25px; }
+        .menu-card {
+            border-radius: 14px; overflow: hidden;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+            transition: transform 0.2s; background: white; height: 100%;
+            display: flex; flex-direction: column;
+        }
+        .menu-card:hover { transform: translateY(-4px); }
+        .menu-card img { width: 100%; height: 170px; object-fit: cover; }
+        .menu-card-body { padding: 14px; flex: 1; display: flex; flex-direction: column; }
+        .menu-card-name { color: #183b56; font-size: 16px; font-weight: bold; margin-bottom: 3px; }
+        .menu-card-category { color: #a58d00; font-size: 12px; font-weight: 600; margin-bottom: 5px; }
+        .menu-card-desc { color: #7b8794; font-size: 13px; margin-bottom: 10px; flex: 1; }
+        .menu-card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: auto; }
+        .menu-card-price { color: #d0b200; font-size: 18px; font-weight: bold; }
+        .veg-dot { width: 14px; height: 14px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+        .veg-dot.veg { background: #1a7a3c; }
+        .veg-dot.nonveg { background: #b00020; }
+        .veg-label { font-size: 12px; font-weight: 600; }
+        .veg-label.veg { color: #1a7a3c; }
+        .veg-label.nonveg { color: #b00020; }
+        .add-btn {
+            background: linear-gradient(#d0b200, #a58d00); color: white;
+            border: none; border-radius: 7px; padding: 7px 14px;
+            font-size: 13px; font-weight: 600; cursor: pointer; transition: opacity 0.2s;
+        }
+        .add-btn:hover { opacity: 0.88; }
+
+        /* ── CART MODAL ── */
+        .cart-modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center;
+        }
+        .cart-modal-overlay.show { display: flex; }
+        .cart-modal {
+            background: white; border-radius: 16px; width: 100%; max-width: 650px;
+            max-height: 90vh; overflow-y: auto; padding: 35px; margin: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .cart-modal-title { color: #183b56; font-size: 24px; font-weight: bold; margin-bottom: 20px; }
+        .cart-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+        .cart-table th { background: #183b56; color: white; padding: 11px 14px; font-size: 13px; text-align: left; }
+        .cart-table td { padding: 11px 14px; color: #5a7184; font-size: 14px; border-bottom: 1px solid #f0f0f0; }
+        .cart-total-row { background: #fff8db; }
+        .cart-total-row td { color: #183b56; font-weight: bold; font-size: 16px; }
+        .remove-btn {
+            background: #fdecea; color: #b00020; border: none;
+            border-radius: 6px; padding: 3px 10px; font-size: 12px; cursor: pointer;
+        }
+        .qty-btn {
+            background: #f0f0f0; border: none; border-radius: 5px;
+            width: 26px; height: 26px; font-size: 16px; font-weight: bold;
+            cursor: pointer; line-height: 1;
+        }
+
+        /* ── ORDER FORM ── */
+        .order-form-section { margin-top: 20px; border-top: 2px solid #f0f0f0; padding-top: 20px; }
+        .order-form-title { color: #183b56; font-size: 18px; font-weight: bold; margin-bottom: 15px; }
+        .order-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .order-form-full { grid-column: 1 / -1; }
+        .form-label { color: #183b56; font-weight: 600; font-size: 13px; margin-bottom: 5px; display: block; }
+        .form-input {
+            border-radius: 8px; border: 1.5px solid #e0e0e0; padding: 10px 13px;
+            font-size: 14px; width: 100%; transition: border-color 0.2s;
+        }
+        .form-input:focus { border-color: #d0b200; outline: none; box-shadow: 0 0 0 3px rgba(208,178,0,0.15); }
+        .place-order-btn {
+            background: linear-gradient(#d0b200, #a58d00); color: white; border: none;
+            border-radius: 9px; padding: 13px; font-size: 16px; font-weight: 700;
+            width: 100%; cursor: pointer; margin-top: 16px; transition: opacity 0.2s;
+        }
+        .place-order-btn:hover { opacity: 0.88; }
+        .close-cart-btn {
+            background: #f0f0f0; color: #183b56; border: none; border-radius: 8px;
+            padding: 10px 25px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 10px;
+        }
+        .order-msg { text-align: center; font-size: 14px; font-weight: 600; margin-top: 12px; min-height: 18px; }
+        .login-warning {
+            background: #fff8db; border: 2px solid #d0b200; border-radius: 10px;
+            padding: 16px 20px; text-align: center; margin-bottom: 15px;
+        }
+        .login-warning p { color: #183b56; font-weight: 600; margin: 0 0 8px 0; }
+        .login-warning a {
+            background: linear-gradient(#d0b200, #a58d00); color: white; border: none;
+            border-radius: 7px; padding: 8px 22px; font-size: 14px; font-weight: 700;
+            text-decoration: none; display: inline-block;
+        }
+
+        /* ── CONFIRMATION ── */
+        .confirm-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.55); z-index: 99999; justify-content: center; align-items: center;
+        }
+        .confirm-overlay.show { display: flex; }
+        .confirm-card {
+            background: white; border-radius: 16px; max-width: 560px; width: 100%;
+            padding: 40px; margin: 20px; text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto;
+        }
+        .confirm-icon { font-size: 65px; margin-bottom: 12px; }
+        .confirm-title { color: #183b56; font-size: 26px; font-weight: bold; margin-bottom: 6px; }
+        .confirm-subtitle { color: #7b8794; font-size: 15px; margin-bottom: 22px; }
+        .confirm-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; text-align: left; }
+        .confirm-detail-box { background: #f9fbfe; border-radius: 10px; padding: 14px 16px; }
+        .confirm-detail-label { color: #7b8794; font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 3px; }
+        .confirm-detail-value { color: #183b56; font-size: 15px; font-weight: bold; }
+        .confirm-items-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+        .confirm-items-table th { background: #183b56; color: white; padding: 9px 13px; font-size: 13px; text-align: left; }
+        .confirm-items-table td { padding: 9px 13px; color: #5a7184; font-size: 13px; border-bottom: 1px solid #f0f0f0; }
+        .confirm-total { color: #d0b200; font-size: 22px; font-weight: bold; margin: 14px 0; }
+        .db-note {
+            background: #e6f9ee; border-left: 4px solid #1a7a3c; border-radius: 8px;
+            padding: 12px 16px; text-align: left; color: #1a7a3c;
+            font-size: 13px; font-weight: 600; margin-bottom: 18px;
+        }
+        .new-order-btn {
+            background: linear-gradient(#d0b200, #a58d00); color: white; border: none;
+            border-radius: 8px; padding: 12px 35px; font-size: 15px; font-weight: 700; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ── NAVBAR ── -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top" style="padding: 5px 15px;">
+    <a class="navbar-brand" href="#">
+        <img src="/static/logo.png" style="width:60px; height:auto;" alt="Logo" />
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <div class="navbar-nav ml-auto align-items-center">
+            <a class="nav-link" href="#WhychooseusSection">Why Choose Us?</a>
+            <a class="nav-link" href="#menuSection">Menu</a>
+            <a class="nav-link" href="#FollowusSection">Follow Us</a>
+            <span class="user-welcome" id="userWelcome"></span>
+            <a class="nav-link" id="logoutLink" href="#" onclick="logout()" style="display:none; color:#b00020; font-weight:600;">Logout</a>
+            <a class="nav-link font-weight-bold" style="color:#d0b200; cursor:pointer;" onclick="openCart()">
+                🛒 Cart <span class="cart-badge" id="cartCount">0</span>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- ── HERO ── -->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 food-munch-home-bg d-flex flex-column justify-content-center">
+            <h1 class="text-center text-white mb-4" style="font-size:42px; font-weight:800;">Get Delicious Food Anytime</h1>
+            <p class="food-munch-home-description text-center text-white mb-4">Eat Smart & Healthy</p>
+            <div class="d-flex flex-row justify-content-center">
+                <a href="#menuSection"><button class="custom-button">View Menu</button></a>
+                <button class="food-munch-home-order-now-button" onclick="openCart()">Order Now</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── WHY CHOOSE US ── -->
+<div id="WhychooseusSection" class="pt-5 pb-5 WCU-section-bg">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="WCU-main-heading">Why Choose Us?</h1>
+                <p class="WCU-main-description">We use both original recipes and classic versions of famous food items</p>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="WCU-card-container text-center shadow p-4 mb-4">
+                    <img src="https://d2clawv67efefq.cloudfront.net/ccbp-responsive-website/food-serve.png" class="WCU-card-image" />
+                    <h1 class="WCU-card-title pt-3">Food Service</h1>
+                    <p class="WCU-card-description">Experience fine dining at the comfort of your home. All our orders are carefully packed and arranged.</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="WCU-card-container text-center shadow p-4 mb-4">
+                    <img src="https://d2clawv67efefq.cloudfront.net/ccbp-responsive-website/fruits-img.png" class="WCU-card-image" />
+                    <h1 class="WCU-card-title pt-3">Fresh Food</h1>
+                    <p class="WCU-card-description">Fresh-cut fruits and vegetables directly picked from our partner farms so you always get them tree to plate.</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="WCU-card-container text-center shadow p-4">
+                    <img src="https://d2clawv67efefq.cloudfront.net/ccbp-responsive-website/offers-img.png" class="WCU-card-image" />
+                    <h1 class="WCU-card-title pt-3">Best Offers</h1>
+                    <p class="WCU-card-description">Food Coupons & Offers upto <span class="offers">50% OFF</span> and Exclusive Promo Codes on all Online Food Orders.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── MENU SECTION ── -->
+<div id="menuSection" class="menu-section">
+    <div class="container">
+        <h2 class="menu-section-title">Our Full Menu</h2>
+        <p class="menu-section-subtitle">Browse all categories — click a category to filter, then add items to your cart!</p>
+        <div class="category-tabs" id="categoryTabs">
+            <div class="cat-tab active" onclick="filterCategory('All')">All Items</div>
+        </div>
+        <div class="row" id="menuContainer">
+            <div class="col-12 text-center py-5">
+                <p style="color:#7b8794; font-size:16px;">Loading menu from database...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── HEALTHY FOODS ── -->
+<div id="HealthyfoodsSection" class="Healthy-foods-section-bg pt-5 pb-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-5">
+                <img src="https://d2clawv67efefq.cloudfront.net/ccbp-responsive-website/healthy-food-plate-img.png" class="w-100" />
+            </div>
+            <div class="col-12 col-md-7 d-flex flex-column justify-content-center">
+                <h1 class="healthy-food-section-heading">Fresh, Healthy, Organic, Delicious Fruits</h1>
+                <p class="healthy-food-section-description">Say no to harmful chemicals and go fully organic with our range of fresh fruits and veggies.</p>
+                <button class="custom-button">Watch Video</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── FOLLOW US ── -->
+<div id="FollowusSection" class="pt-5 pb-5">
+    <h1 class="Follow-us-section-heading text-center">Follow Us</h1>
+    <div class="d-flex flex-row justify-content-center">
+        <div class="Follow-us-section-icon-container"><i class="fab fa-twitter icon"></i></div>
+        <div class="Follow-us-section-icon-container"><i class="fab fa-instagram icon"></i></div>
+        <div class="Follow-us-section-icon-container"><i class="fab fa-youtube icon"></i></div>
+    </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<div class="footer-section pt-3 pb-3" style="background: linear-gradient(135deg, #003d40 0%, #006b70 50%, #00b4bb 100%);">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center text-white">
+                <img src="/static/logo.png" style="width:65px; height:auto;" />
+                <h5 class="footer-section-mail-id" style="font-size:16px; margin:8px 0 4px 0;">ustadhotel@gmail.com</h5>
+                <p class="footer-section-address" style="font-size:13px; margin:0;">123 Food Street, Kerala, India</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── CART MODAL ── -->
+<div class="cart-modal-overlay" id="cartOverlay">
+    <div class="cart-modal">
+        <h3 class="cart-modal-title">🛒 Your Cart</h3>
+        <div id="cartEmptyMsg" style="text-align:center; color:#7b8794; padding:20px 0; font-size:15px;">
+            Your cart is empty. Browse the menu and add items!
+        </div>
+        <div id="cartContent" style="display:none;">
+            <table class="cart-table">
+                <thead>
+                    <tr><th>Item</th><th>Price</th><th>Qty</th><th>Subtotal</th><th></th></tr>
+                </thead>
+                <tbody id="cartTableBody"></tbody>
+                <tfoot>
+                    <tr class="cart-total-row">
+                        <td colspan="3">Total Amount</td>
+                        <td id="cartTotalCell">Rs. 0</td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <!-- Login warning shown if not logged in -->
+            <div class="login-warning" id="loginWarning" style="display:none;">
+                <p>🔒 You need to login to place an order</p>
+                <a href="/login">Login Now</a>
+            </div>
+
+            <!-- Order form shown only if logged in -->
+            <div class="order-form-section" id="orderFormSection" style="display:none;">
+                <p class="order-form-title">📦 Delivery Details</p>
+                <div class="order-form-grid">
+                    <div>
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-input" id="orderName" placeholder="Your name" />
+                    </div>
+                    <div>
+                        <label class="form-label">Phone Number</label>
+                        <input type="text" class="form-input" id="orderPhone" placeholder="10-digit number" />
+                    </div>
+                    <div class="order-form-full">
+                        <label class="form-label">Delivery Address</label>
+                        <input type="text" class="form-input" id="orderAddress" placeholder="Full delivery address" />
+                    </div>
+                    <div>
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" id="orderEmail" placeholder="your@email.com" />
+                    </div>
+                    <div>
+                        <label class="form-label">Payment Method</label>
+                        <select class="form-input" id="paymentMethod">
+                            <option value="Cash on Delivery">Cash on Delivery</option>
+                            <option value="Online Payment">Online Payment</option>
+                            <option value="Card">Card</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="place-order-btn" onclick="placeOrder()">🍽️ Place Order</button>
+                <div class="order-msg" id="orderMsg"></div>
+            </div>
+        </div>
+        <button class="close-cart-btn" onclick="closeCart()">✕ Close</button>
+    </div>
+</div>
+
+<!-- ── ORDER CONFIRMATION ── -->
+<div class="confirm-overlay" id="confirmOverlay">
+    <div class="confirm-card">
+        <div class="confirm-icon">✅</div>
+        <h2 class="confirm-title">Order Placed!</h2>
+        <p class="confirm-subtitle">Thank you! Your order is confirmed and on its way 🎉</p>
+        <div class="confirm-detail-grid">
+            <div class="confirm-detail-box">
+                <p class="confirm-detail-label">Customer Name</p>
+                <p class="confirm-detail-value" id="confirmName">—</p>
+            </div>
+            <div class="confirm-detail-box">
+                <p class="confirm-detail-label">Phone</p>
+                <p class="confirm-detail-value" id="confirmPhone">—</p>
+            </div>
+            <div class="confirm-detail-box" style="grid-column:1/-1;">
+                <p class="confirm-detail-label">Delivery Address</p>
+                <p class="confirm-detail-value" id="confirmAddress">—</p>
+            </div>
+            <div class="confirm-detail-box">
+                <p class="confirm-detail-label">Order ID</p>
+                <p class="confirm-detail-value" id="confirmOrderId" style="font-size:12px;">—</p>
+            </div>
+            <div class="confirm-detail-box">
+                <p class="confirm-detail-label">Payment</p>
+                <p class="confirm-detail-value" id="confirmPayment">—</p>
+            </div>
+        </div>
+        <table class="confirm-items-table">
+            <thead><tr><th>Item</th><th>Qty</th><th>Price</th></tr></thead>
+            <tbody id="confirmItemsBody"></tbody>
+        </table>
+        <p class="confirm-total" id="confirmTotal">Total: Rs. 0</p>
+        <button class="new-order-btn" onclick="closeConfirm()">Order More Food</button>
+    </div>
+</div>
+
+<!-- ── JAVASCRIPT ── -->
+<script>
+    let cart = [];
+    let allMenuItems = [];
+    let loggedInUser = null;
+
+    // ── Check login status on page load ──
+   window.onload = function() {
+    // Load menu immediately
+    loadMenu();
+
+    // Check session separately
+    fetch('/api/session')
+        .then(r => r.json())
+        .then(data => {
+            if (data.logged_in) {
+                loggedInUser = data.user;
+                document.getElementById('userWelcome').innerText = '👋 ' + data.user.name;
+                document.getElementById('logoutLink').style.display = 'block';
+                document.getElementById('orderName').value = data.user.name;
+                document.getElementById('orderEmail').value = data.user.email;
+                document.getElementById('orderPhone').value = data.user.phone;
+                document.getElementById('orderAddress').value = data.user.address;
+            }
+        })
+        .catch(() => {});
+};
+
+    // ── Load menu from MongoDB ──
+    function loadMenu() {
+        fetch('/api/menu')
+            .then(r => r.json())
+            .then(items => {
+                allMenuItems = items;
+                buildCategoryTabs(items);
+                renderMenuCards(items);
+            })
+            .catch(() => {
+                document.getElementById('menuContainer').innerHTML =
+                    '<div class="col-12 text-center py-4"><p style="color:red;">Could not load menu. Make sure Flask server is running!</p></div>';
+            });
+    }
+
+    // ── Build category filter tabs ──
+    function buildCategoryTabs(items) {
+        const categories = [...new Set(items.map(i => i.category))];
+        const tabs = document.getElementById('categoryTabs');
+        categories.forEach(cat => {
+            const div = document.createElement('div');
+            div.className = 'cat-tab';
+            div.innerText = cat;
+            div.onclick = () => filterCategory(cat);
+            tabs.appendChild(div);
+        });
+    }
+
+    // ── Filter by category ──
+    function filterCategory(cat) {
+        document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+        event.target.classList.add('active');
+        const filtered = cat === 'All' ? allMenuItems : allMenuItems.filter(i => i.category === cat);
+        renderMenuCards(filtered);
+    }
+
+    // ── Render menu cards ──
+    function renderMenuCards(items) {
+        const container = document.getElementById('menuContainer');
+        container.innerHTML = '';
+        items.forEach(item => {
+            const vegClass = item.is_veg ? 'veg' : 'nonveg';
+            const vegText = item.is_veg ? 'Veg' : 'Non-Veg';
+            container.innerHTML += `
+                <div class="col-12 col-md-6 col-lg-4 mb-4">
+                    <div class="menu-card">
+                        <img src="${item.image}" alt="${item.name}" />
+                        <div class="menu-card-body">
+                            <p class="menu-card-category">${item.category}</p>
+                            <p class="menu-card-name">${item.name}</p>
+                            <p class="menu-card-desc">${item.description}</p>
+                            <div class="menu-card-footer">
+                                <div>
+                                    <p class="menu-card-price">Rs. ${item.price}</p>
+                                    <span class="veg-dot ${vegClass}"></span>
+                                    <span class="veg-label ${vegClass}">${vegText}</span>
+                                </div>
+                                <button class="add-btn" onclick="addToCart('${item.name}', ${item.price})">+ Add</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+        });
+    }
+
+    // ── Cart functions ──
+    function addToCart(name, price) {
+        const existing = cart.find(i => i.item_name === name);
+        if (existing) { existing.quantity++; }
+        else { cart.push({ item_name: name, price: price, quantity: 1 }); }
+        updateCartCount();
+        openCart();
+    }
+
+    function updateCartCount() {
+        const total = cart.reduce((a, i) => a + i.quantity, 0);
+        document.getElementById('cartCount').innerText = total;
+    }
+
+    function openCart() {
+        renderCart();
+        document.getElementById('cartOverlay').classList.add('show');
+    }
+
+    function closeCart() {
+        document.getElementById('cartOverlay').classList.remove('show');
+    }
+
+    function renderCart() {
+        const tbody = document.getElementById('cartTableBody');
+        const emptyMsg = document.getElementById('cartEmptyMsg');
+        const cartContent = document.getElementById('cartContent');
+
+        if (cart.length === 0) {
+            emptyMsg.style.display = 'block';
+            cartContent.style.display = 'none';
+            return;
+        }
+
+        emptyMsg.style.display = 'none';
+        cartContent.style.display = 'block';
+
+        tbody.innerHTML = '';
+        let total = 0;
+        cart.forEach((item, idx) => {
+            const sub = item.price * item.quantity;
+            total += sub;
+            tbody.innerHTML += `
+                <tr>
+                    <td>${item.item_name}</td>
+                    <td>Rs. ${item.price}</td>
+                    <td>
+                        <button class="qty-btn" onclick="changeQty(${idx}, -1)">−</button>
+                        <span style="margin:0 8px">${item.quantity}</span>
+                        <button class="qty-btn" onclick="changeQty(${idx}, 1)">+</button>
+                    </td>
+                    <td>Rs. ${sub}</td>
+                    <td><button class="remove-btn" onclick="removeItem(${idx})">✕</button></td>
+                </tr>`;
+        });
+        document.getElementById('cartTotalCell').innerText = 'Rs. ' + total;
+
+        // Show login warning or order form
+        if (!loggedInUser) {
+            document.getElementById('loginWarning').style.display = 'block';
+            document.getElementById('orderFormSection').style.display = 'none';
+        } else {
+            document.getElementById('loginWarning').style.display = 'none';
+            document.getElementById('orderFormSection').style.display = 'block';
+        }
+    }
+
+    function changeQty(idx, delta) {
+        cart[idx].quantity += delta;
+        if (cart[idx].quantity <= 0) cart.splice(idx, 1);
+        updateCartCount();
+        renderCart();
+    }
+
+    function removeItem(idx) {
+        cart.splice(idx, 1);
+        updateCartCount();
+        renderCart();
+    }
+
+    // ── Place Order ──
+    function placeOrder() {
+        const name = document.getElementById('orderName').value.trim();
+        const phone = document.getElementById('orderPhone').value.trim();
+        const address = document.getElementById('orderAddress').value.trim();
+        const email = document.getElementById('orderEmail').value.trim();
+        const payment = document.getElementById('paymentMethod').value;
+        const msg = document.getElementById('orderMsg');
+
+        if (!name || !phone || !address || !email) {
+            msg.style.color = '#b00020';
+            msg.innerText = '❌ Please fill in all delivery details!';
+            return;
+        }
+
+        const total = cart.reduce((a, i) => a + i.price * i.quantity, 0);
+
+        fetch('/api/order', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ customer_name: name, customer_phone: phone, customer_address: address, customer_email: email, payment_method: payment, items: cart, total_price: total })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                closeCart();
+                showConfirmation(data, name, phone, address, payment, total);
+                cart = [];
+                updateCartCount();
+            } else {
+                msg.style.color = '#b00020';
+                msg.innerText = '❌ Something went wrong. Try again!';
+            }
+        });
+    }
+
+    // ── Show Confirmation ──
+    function showConfirmation(data, name, phone, address, payment, total) {
+        document.getElementById('confirmName').innerText = name;
+        document.getElementById('confirmPhone').innerText = phone;
+        document.getElementById('confirmAddress').innerText = address;
+        document.getElementById('confirmOrderId').innerText = data.order_id;
+        document.getElementById('confirmPayment').innerText = payment;
+        document.getElementById('confirmTotal').innerText = 'Total: Rs. ' + total;
+
+        const tbody = document.getElementById('confirmItemsBody');
+        tbody.innerHTML = '';
+        data.items.forEach(item => {
+            tbody.innerHTML += `<tr><td>${item.item_name}</td><td>${item.quantity}</td><td>Rs. ${item.price * item.quantity}</td></tr>`;
+        });
+
+        document.getElementById('confirmOverlay').classList.add('show');
+    }
+
+    function closeConfirm() {
+        document.getElementById('confirmOverlay').classList.remove('show');
+    }
+
+    function logout() {
+        fetch('/api/logout').then(() => { window.location.reload(); });
+    }
+</script>
+</body>
+</html>
