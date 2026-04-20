@@ -18,7 +18,9 @@ def serialize(doc):
 # ── PAGES ──
 @app.route('/')
 def home():
-    return render_template('index.html')
+    if 'user' in session:
+        return render_template('index.html')
+    return redirect('/signup')
 
 @app.route('/signup')
 def signup_page():
