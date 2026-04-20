@@ -6,7 +6,7 @@
 }
 
 .food-munch-home-bg {
-    background-image: url("https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=1400&q=80");;
+    background-image: url("/static/hero-bg.jpg");
     background-size: cover;
     height: 100vh;
     font-family: roboto;
