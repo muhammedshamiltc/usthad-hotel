@@ -8,7 +8,7 @@ app.secret_key = 'foodmunch_secret_key_2024'
 CORS(app)
 
 # Connect to MongoDB
-client = MongoClient('mongodb://localhost:27017/')
+client = MongoClient('mongodb+srv://shamil:ustad1234@ustad-hotel.y3bu4iu.mongodb.net/?appName=ustad-hotel')
 db = client['food_munch_db']
     
 def serialize(doc):
